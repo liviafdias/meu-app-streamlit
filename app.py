@@ -24,7 +24,7 @@ def len_texto(x):
 
 @st.cache_data
 def carregar_dados_brasil():
-    df = pd.read_csv('TSNE_BR_COM_SENTIMENTO.csv', sep=';')
+    df = pd.read_csv('data/TSNE_BR_COM_SENTIMENTO.csv', sep=';')
     df['DT_PUBLICACAO'] = df['DT_PUBLICACAO'].apply(ajeita_data)
     df.dropna(subset=['DT_PUBLICACAO'], inplace=True)
     df.sort_values('DT_PUBLICACAO', inplace=True)
@@ -36,7 +36,7 @@ def carregar_dados_brasil():
 
 @st.cache_data
 def carregar_dados_suecia():
-    df = pd.read_csv('TSNE_SE_COM_SENTIMENTO.csv', sep=';')
+    df = pd.read_csv('data/TSNE_SE_COM_SENTIMENTO.csv', sep=';')
     df['DT_PUBLICACAO'] = df['DT_PUBLICACAO'].apply(ajeita_data)
     df.dropna(subset=['DT_PUBLICACAO'], inplace=True)
     df.sort_values('DT_PUBLICACAO', inplace=True)
@@ -48,7 +48,7 @@ def carregar_dados_suecia():
 
 @st.cache_data
 def carregar_stop_words_br():
-    stop_df = pd.read_csv('STOP_WORDS_PORTUGUES.csv', sep=';')
+    stop_df = pd.read_csv('data/STOP_WORDS_PORTUGUES.csv', sep=';')
     return list(stop_df.STOP_WORDS.values)
 
 brasil = carregar_dados_brasil()
