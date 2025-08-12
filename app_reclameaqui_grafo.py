@@ -1,6 +1,5 @@
 # app_reclameaqui.py
 import streamlit as st
-import os
 import pandas as pd
 import plotly.express as px
 import numpy as np
@@ -150,30 +149,32 @@ except Exception as e:
     st.warning(f"Não foi possível carregar dados da Suécia: {e}")
     suecia = pd.DataFrame()
 
-# Sidebar (filtros do Instagram)
+# Sidebar (filtros do Instagram) — INICIAM VAZIOS
 with st.sidebar:
     st.header("Filtros (Instagram)")
 
     # Constrói lista de marcas a partir do BR (se vazio, tenta SE)
     base_marcas = brasil if not brasil.empty else suecia
     todas_marcas = sorted(list(base_marcas["MARCA"].unique())) if "MARCA" in base_marcas.columns else []
-    default_sel = todas_marcas[:2] if len(todas_marcas) >= 2 else todas_marcas
 
     marcas_selecionadas = st.multiselect(
         "Comparar Marcas",
-        todas_marcas,
-        default=default_sel,
+        options=todas_marcas,
+        default=[],                     # inicia vazio
         placeholder="+ Adicionar marcas",
         key="sb_marcas"
     )
 
+    # Países disponíveis a partir dos dados carregados
     paises_opts = []
     if not brasil.empty: paises_opts.append("BR")
     if not suecia.empty: paises_opts.append("SE")
+
     paises = st.multiselect(
         "País",
-        paises_opts or ["BR","SE"],
-        default=paises_opts or ["BR","SE"],
+        options=paises_opts or ["BR", "SE"],
+        default=[],                     # inicia vazio
+        placeholder="Selecionar país(es)",
         key="sb_paises"
     )
 
@@ -181,12 +182,12 @@ with st.sidebar:
     anos_br = brasil['DT_PUBLICACAO'].dt.year.unique().tolist() if 'DT_PUBLICACAO' in brasil.columns else []
     anos_se = suecia['DT_PUBLICACAO'].dt.year.unique().tolist() if 'DT_PUBLICACAO' in suecia.columns else []
     anos_disponiveis = sorted(set(anos_br) | set(anos_se)) or [2020, 2021, 2022, 2023, 2024]
-    default_years = [y for y in anos_disponiveis if y >= (max(anos_disponiveis) - 2)] if anos_disponiveis else []
 
     periodo_selecionado = st.multiselect(
         "Período (anos)",
-        anos_disponiveis,
-        default=default_years or anos_disponiveis[-3:],
+        options=anos_disponiveis,
+        default=[],                     # inicia vazio
+        placeholder="Selecionar ano(s)",
         key="sb_anos"
     )
 
@@ -503,7 +504,7 @@ with tab_reclameaqui:
 
     # --- Grafo PEUGEOT/TOYOTA ---
     with rq_tab2:
-        st.subheader("Coocorrência de tópicos")
+        st.subheader("Coocorrência de tópicos (layout idêntico ao grafo.py)")
         marca_escolhida = st.selectbox(
             "Selecione a base de dados do grafo:",
             options=["PEUGEOT", "TOYOTA"],
@@ -566,7 +567,7 @@ with tab_reclameaqui:
                     for n, (x, y) in posx.items():
                         ax.scatter(x, y, s=100, zorder=2, edgecolor="black", lw=1.5, c="#556C8E")
                         if n in listap:
-                            ax.annotate(n, xy=(x, y), fontsize=6, ha="center", va="center",
+                            ax.annotate(n, xy=(x, y), fontsize=4, ha="center", va="center",
                                         xytext=(0, 10), textcoords="offset points")
 
                     st.caption(f"Base selecionada: **{marca_escolhida}** ({xlsx_path.as_posix()})")
@@ -574,4 +575,3 @@ with tab_reclameaqui:
 
             except Exception as e:
                 st.error(f"Erro ao gerar o grafo para '{marca_escolhida}': {e}")
-
