@@ -503,7 +503,7 @@ with tab_reclameaqui:
 
     # --- Grafo PEUGEOT/TOYOTA ---
     with rq_tab2:
-        st.subheader("Coocorrência de tópicos (layout idêntico ao grafo.py)")
+        st.subheader("Coocorrência de tópicos")
         marca_escolhida = st.selectbox(
             "Selecione a base de dados do grafo:",
             options=["PEUGEOT", "TOYOTA"],
@@ -574,3 +574,4 @@ with tab_reclameaqui:
 
             except Exception as e:
                 st.error(f"Erro ao gerar o grafo para '{marca_escolhida}': {e}")
+
